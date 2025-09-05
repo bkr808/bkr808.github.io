@@ -237,41 +237,46 @@
       btn.className = "key";
       if(i === 3){
         btn.textContent = "⌫";
-        btn.onclick = ()=>{currentGuess.pop(); updateDisplay();};
-      }else{
-        const letter = letterSet[idx++];
-        btn.textContent = letter;
-        btn.onclick = ()=> {
-          if(currentGuess.length < targetWord.length){
-            currentGuess.push(letter);
-            updateDisplay();
-            if(currentGuess.length === targetWord.length){
-              const guess = currentGuess.join("");
-              if(guess === targetWord){
-                showModal("يا تخمين صح – True Guess");
-                updateCoins(10);
-                correctStreak++;
-                wrongStreak = 0;
-                if(correctStreak === 10){
-                  updateCoins(1000);
-                  showModal("🎉 Bonus +1000 Coins!");
-                  correctStreak = 0;
-                }
-                pickRandomWord();
-              }else{
-                showModal("تخمين خطأ – Wrong Guess");
-                wrongStreak++;
-                correctStreak = 0;
-                if(wrongStreak >= 3){
-                  updateCoins(-2);
+        btn.onclick = ()=>{ currentGuess.pop(); updateDisplay(); };
+      } else {
+        if(idx < letterSet.length){
+          const letter = letterSet[idx++];
+          btn.textContent = letter;
+          btn.onclick = ()=> {
+            if(currentGuess.length < targetWord.length){
+              currentGuess.push(letter);
+              updateDisplay();
+              if(currentGuess.length === targetWord.length){
+                const guess = currentGuess.join("");
+                if(guess === targetWord){
+                  showModal("يا تخمين صح – True Guess");
+                  updateCoins(10);
+                  correctStreak++;
                   wrongStreak = 0;
+                  if(correctStreak === 10){
+                    updateCoins(1000);
+                    showModal("🎉 Bonus +1000 Coins!");
+                    correctStreak = 0;
+                  }
+                  pickRandomWord();
+                }else{
+                  showModal("تخمين خطأ – Wrong Guess");
+                  wrongStreak++;
+                  correctStreak = 0;
+                  if(wrongStreak >= 3){
+                    updateCoins(-2);
+                    wrongStreak = 0;
+                  }
+                  currentGuess = [];
+                  updateDisplay();
                 }
-                currentGuess = [];
-                updateDisplay();
               }
             }
-          }
-        };
+          };
+        } else {
+          btn.textContent = "";
+          btn.classList.add("disabled");
+        }
       }
       keyboard.appendChild(btn);
     }
