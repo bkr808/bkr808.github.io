@@ -4,12 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Guessing Game</title>
-
-  <!-- كود تهيئة AdSense -->
-  <script async 
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
-    crossorigin="anonymous"></script>
-
   <style>
     :root{
       --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
@@ -59,7 +53,7 @@
       text-align:center; font-weight:bold; min-height:3.2rem;}
 
     .keyboard{display:grid; grid-template-columns:repeat(4, 70px); grid-template-rows:repeat(3, 70px);
-      gap:15px; margin:40px 0 80px 0;} /* زودت المسافة عشان البانر */
+      gap:15px; margin:40px 0 50px 0;}
     .key{
       background:var(--btn-bg); border:2px solid var(--primary); border-radius:12px; color:var(--secondary);
       font-size:1.3rem; display:flex; justify-content:center; align-items:center; cursor:pointer;
@@ -78,46 +72,38 @@
       color:var(--secondary); font-size:1.1rem; text-align:center; min-width:240px;
       box-shadow:0 10px 25px rgba(0,0,0,.35);
     }
-
-    /* إعلان بانر سفلي */
-    .ad-banner{
-      position:fixed; bottom:0; left:0; width:100%; text-align:center;
-      background:rgba(0,0,0,.2); padding:6px 0; z-index:5;
-    }
-
     @media (max-width:420px){
       .keyboard{grid-template-columns:repeat(4, 58px); grid-template-rows:repeat(3, 58px); gap:12px}
       #word-display{font-size:2.2rem; letter-spacing:10px}
+    }
+
+    /* زر الرجوع */
+    .back-btn {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 15px;
+      background-color: #39c2ff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      color: #fff;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      z-index: 9999;
+    }
+    .back-btn:hover {
+      background-color: #5ecbff;
+      transform: translateX(-50%) scale(1.1);
     }
   </style>
 </head>
 <body>
 
 <!-- زر الرجوع -->
-<button class="back-btn" onclick="window.location.href='main.html'">←</button>
-
-<style>
-  .back-btn {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 15px;
-    background-color: var(--primary-2);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    color: #fff;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 9999;
-  }
-  .back-btn:hover {
-    background-color: #5ecbff;
-    transform: translateX(-50%) scale(1.1);
-  }
-</style>
+<button class="back-btn">←</button>
 
 <canvas id="space"></canvas>
 <div class="grid-overlay"></div>
@@ -139,31 +125,23 @@
   <div class="box" id="modal-text"></div>
 </div>
 
-<!-- إعلان بانر سفلي -->
-<div class="ad-banner">
+<!-- ======= Banner Ad أسفل الصفحة ======= -->
+<div id="bottom-banner" style="position:fixed; bottom:0; left:0; width:100%; text-align:center; z-index:999;">
   <ins class="adsbygoogle"
        style="display:block"
-       data-ad-client="ca-pub-5814253816484006"
-       data-ad-slot="1234567890"
+       data-ad-client="YOUR_AD_CLIENT"
+       data-ad-slot="YOUR_AD_SLOT"
        data-ad-format="auto"
        data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<!-- إعلان بيني -->
-<div class="modal" id="interstitial-ad">
-  <div class="box">
-    <p>إعلان</p>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:300px;height:250px"
-         data-ad-client="ca-pub-5814253816484006"
-         data-ad-slot="9876543210"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-</div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
 <script>
-  /* ===== Background ===== */
+  /* ===== Background particles ===== */
   const canvas = document.getElementById('space');
   const ctx = canvas.getContext('2d');
   let w,h,dpr;
@@ -202,7 +180,6 @@
   const coinsEl = document.getElementById("coins");
   const modal = document.getElementById("modal");
   const modalText = document.getElementById("modal-text");
-  const interstitialAd = document.getElementById("interstitial-ad");
 
   let targetWord = "";
   let currentGuess = [];
@@ -239,5 +216,106 @@
   }
 
   function buildLetters(){
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    const uniq = Array.from(new Set(targetWord.split("")));
+    letterSet = [...uniq];
+    while(letterSet.length < 11){
+      const r = alphabet[Math.floor(Math.random()*alphabet.length)];
+      if(!letterSet.includes(r)) letterSet.push(r);
+    }
+    for(let i = letterSet.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [letterSet[i], letterSet[j]] = [letterSet[j], letterSet[i]];
+    }
+  }
 
+  function renderKeyboard(){
+    keyboard.innerHTML = "";
+    let idx = 0;
+    for(let i=0;i<12;i++){
+      const btn = document.createElement("div");
+      btn.className = "key";
+      if(i === 3){
+        btn.textContent = "⌫";
+        btn.onclick = ()=>{currentGuess.pop(); updateDisplay();};
+      }else{
+        const letter = letterSet[idx++];
+        btn.textContent = letter;
+        btn.onclick = ()=> {
+          if(currentGuess.length < targetWord.length){
+            currentGuess.push(letter);
+            updateDisplay();
+            if(currentGuess.length === targetWord.length){
+              const guess = currentGuess.join("");
+              if(guess === targetWord){
+                showModal("يا تخمين صح – True Guess");
+                updateCoins(10);
+                correctStreak++;
+                wrongStreak = 0;
+                if(correctStreak === 10){
+                  updateCoins(1000);
+                  showModal("🎉 Bonus +1000 Coins!");
+                  correctStreak = 0;
+                }
+                pickRandomWord();
+              }else{
+                showModal("تخمين خطأ – Wrong Guess");
+                wrongStreak++;
+                correctStreak = 0;
+                if(wrongStreak >= 3){
+                  updateCoins(-2);
+                  wrongStreak = 0;
+                }
+                currentGuess = [];
+                updateDisplay();
+              }
+            }
+          }
+        };
+      }
+      keyboard.appendChild(btn);
+    }
+  }
+
+  pickRandomWord();
+
+  /* ===== Interstitial Ad عند الخروج ===== */
+  function showInterstitialAd() {
+    const interstitial = document.createElement("div");
+    interstitial.style.position = "fixed";
+    interstitial.style.inset = "0";
+    interstitial.style.backgroundColor = "rgba(0,0,0,0.7)";
+    interstitial.style.display = "flex";
+    interstitial.style.alignItems = "center";
+    interstitial.style.justifyContent = "center";
+    interstitial.style.zIndex = "9999";
+
+    interstitial.innerHTML = `
+      <div style="background:#fff; padding:20px; border-radius:12px; text-align:center; max-width:300px;">
+        <p>إعلان سريع قبل الخروج</p>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="YOUR_AD_CLIENT"
+             data-ad-slot="YOUR_AD_SLOT"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <button id="closeAd" style="margin-top:10px; padding:6px 12px;">إغلاق</button>
+      </div>
+    `;
+    document.body.appendChild(interstitial);
+    (adsbygoogle = window.adsbygoogle || []).push({});
+
+    document.getElementById("closeAd").onclick = () => {
+      document.body.removeChild(interstitial);
+      window.history.back();
+    };
+  }
+
+  document.querySelector(".back-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    showInterstitialAd();
+  });
+</script>
+
+</body>
+</html>
