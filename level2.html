@@ -128,7 +128,6 @@
 <div id="bottom-banner" style="position:fixed; bottom:0; left:0; width:100%; text-align:center; z-index:999;">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
      crossorigin="anonymous"></script>
-  <!-- pp5 -->
   <ins class="adsbygoogle"
        style="display:block"
        data-ad-client="ca-pub-5814253816484006"
@@ -224,51 +223,57 @@
     for(let i=0;i<12;i++){
       const btn = document.createElement("div");
       btn.className = "key";
-      if(i === 3){
+
+      if(i === 3){  // زر الحذف
         btn.textContent = "⌫";
         btn.onclick = ()=>{currentGuess.pop(); updateDisplay();};
-      }else{
-        const letter = letterSet[idx++];
-        btn.textContent = letter;
-        btn.onclick = ()=> {
-          if(currentGuess.length < targetWord.length){
-            currentGuess.push(letter);
-            updateDisplay();
-            if(currentGuess.length === targetWord.length){
-              const guess = currentGuess.join("");
-              if(guess === targetWord){
-                showModal("يا تخمين صح – True Guess");
-                updateCoins(10);
-                correctStreak++;
-                wrongStreak = 0;
-                if(correctStreak === 10){
-                  updateCoins(1000);
-                  showModal("🎉 Bonus +1000 Coins!");
-                  correctStreak = 0;
-                }
-                pickRandomWord();
-              }else{
-                showModal("تخمين خطأ – Wrong Guess");
-                wrongStreak++;
-                correctStreak = 0;
-                if(wrongStreak >= 3){
-                  updateCoins(-2);
+      } else {
+        if(idx < letterSet.length){
+          const letter = letterSet[idx++];
+          btn.textContent = letter;
+          btn.onclick = ()=> {
+            if(currentGuess.length < targetWord.length){
+              currentGuess.push(letter);
+              updateDisplay();
+              if(currentGuess.length === targetWord.length){
+                const guess = currentGuess.join("");
+                if(guess === targetWord){
+                  showModal("يا تخمين صح – True Guess");
+                  updateCoins(10);
+                  correctStreak++;
                   wrongStreak = 0;
+                  if(correctStreak === 10){
+                    updateCoins(1000);
+                    showModal("🎉 Bonus +1000 Coins!");
+                    correctStreak = 0;
+                  }
+                  pickRandomWord();
+                } else {
+                  showModal("تخمين خطأ – Wrong Guess");
+                  wrongStreak++;
+                  correctStreak = 0;
+                  if(wrongStreak >= 3){
+                    updateCoins(-2);
+                    wrongStreak = 0;
+                  }
+                  currentGuess = [];
+                  updateDisplay();
                 }
-                currentGuess = [];
-                updateDisplay();
               }
             }
-          }
-        };
+          };
+        } else {
+          btn.classList.add("disabled");
+          btn.textContent = "";
+        }
       }
+
       keyboard.appendChild(btn);
     }
   }
 
   pickRandomWord();
 
-  // حذف الإعلان البيني عند الخروج
   document.querySelector(".back-btn").addEventListener("click", ()=>{
     window.history.back();
   });
