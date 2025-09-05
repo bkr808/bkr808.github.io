@@ -34,7 +34,6 @@
         linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
       background-size:40px 40px, 40px 40px; pointer-events:none; mix-blend-mode:soft-light;
     }
-
     .ui{position:relative; z-index:2; width:100%; display:flex; flex-direction:column; align-items:center;}
     .top-bar{
       width:100%; direction:ltr;
@@ -46,12 +45,10 @@
     .coins{display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--glass);
       border:1px solid var(--primary); border-radius:10px;}
     .coin-icon{width:22px; height:22px; border-radius:50%; background:gold; border:2px solid #fff5a3; box-shadow:0 0 8px rgba(255,215,0,.5) inset;}
-
     #hint-box{margin-top:10px; padding:12px 20px; background:var(--glass); border:1px solid var(--primary);
       border-radius:10px; color:var(--secondary); font-size:1rem; max-width:80%; text-align:center;}
     #word-display{margin-top:18px; font-size:2.6rem; letter-spacing:12px; color:var(--secondary);
       text-align:center; font-weight:bold; min-height:3.2rem;}
-
     .keyboard{display:grid; grid-template-columns:repeat(4, 70px); grid-template-rows:repeat(3, 70px);
       gap:15px; margin:40px 0 50px 0;}
     .key{
@@ -62,7 +59,6 @@
     .key:hover{background:var(--btn-hover); transform:scale(1.05)}
     .key:active{transform:scale(.95)}
     .disabled{opacity:.5; pointer-events:none}
-
     .modal{
       position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:3;
       background:rgba(0,0,0,.25);
@@ -76,34 +72,35 @@
       .keyboard{grid-template-columns:repeat(4, 58px); grid-template-rows:repeat(3, 58px); gap:12px}
       #word-display{font-size:2.2rem; letter-spacing:10px}
     }
+    /* زر الرجوع */
+    .back-btn {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 15px;
+      background-color: #39c2ff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      color: #fff;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      z-index: 9999;
+    }
+    .back-btn:hover {
+      background-color: #5ecbff;
+      transform: translateX(-50%) scale(1.1);
+    }
+    /* Banner السفلي */
+    #bottom-banner{
+      position:fixed; bottom:0; left:0; width:100%; text-align:center; z-index:999;
+    }
   </style>
 </head>
 <body>
-<!-- زر الرجوع -->
-<button class="back-btn" onclick="window.location.href='main.html'">←</button>
-
-<style>
-  .back-btn {
-    position: fixed;
-    top: 10px;
-    left: 50%;              /* يبدأ من منتصف الصفحة */
-    transform: translateX(-50%);
-    padding: 10px 15px;
-    background-color: var(--primary-2); /* الأزرق من ألوان الخلفية */
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    color: #fff;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 9999; /* عشان يكون فوق أي عناصر */
-  }
-  .back-btn:hover {
-    background-color: #5ecbff; /* أزرق أفتح */
-    transform: translateX(-50%) scale(1.1); /* الحفاظ على المنتصف + التكبير */
-  }
-</style>
+  <button class="back-btn" onclick="window.location.href='main.html'">←</button>
 
   <canvas id="space"></canvas>
   <div class="grid-overlay"></div>
@@ -125,6 +122,22 @@
     <div class="box" id="modal-text"></div>
   </div>
 
+  <!-- Banner Ad سفلي فقط (pp6) -->
+  <div id="bottom-banner">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
+        crossorigin="anonymous"></script>
+    <!-- pp6 -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-5814253816484006"
+         data-ad-slot="6715431947"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
   <script>
     /* ===== Background particles ===== */
     const canvas = document.getElementById('space');
@@ -141,7 +154,7 @@
       ctx.clearRect(0,0,w,h);
       ctx.fillStyle='rgba(124,255,243,0.2)';
       circles.forEach(c=>{ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
-        c.y -= c.vy; if(c.y + c.r < 0){c.y = h+c.r; c.x=Math.random()*w;}});
+        c.y -= c.vy; if(c.y + c.r < 0){c.y = h+c.r; c.x=Math.random()*w;}}); 
       requestAnimationFrame(animate);
     } animate();
 
@@ -157,7 +170,6 @@
       {word:"MARS",hint:"Red planet"},
       {word:"EAGLE",hint:"Large bird of prey"},
       {word:"LION",hint:"King of beasts"}
-      // ... باقي الكلمات اللي عندك
     ];
 
     const hintEl = document.getElementById("hint-box");
@@ -171,7 +183,7 @@
     let currentGuess = [];
     let coins = 0;
     let wrongStreak = 0;
-    let correctStreak = 0; // ✅ تتبع عدد الصح على التوالي
+    let correctStreak = 0;
     let letterSet = [];
 
     function showModal(msg){
@@ -236,18 +248,18 @@
                 if(guess === targetWord){
                   showModal("يا تخمين صح – True Guess");
                   updateCoins(10);
-                  correctStreak++; // ✅ زود عدد الصح المتتالية
+                  correctStreak++;
                   wrongStreak = 0;
-                  if(correctStreak === 10){ // ✅ مكافأة 1000
+                  if(correctStreak === 10){
                     updateCoins(1000);
                     showModal("🎉 Bonus +1000 Coins!");
-                    correctStreak = 0; // تصفير بعد البونص
+                    correctStreak = 0;
                   }
                   pickRandomWord();
                 }else{
                   showModal("تخمين خطأ – Wrong Guess");
                   wrongStreak++;
-                  correctStreak = 0; // ❌ لو غلط، تصفير الصح المتتالية
+                  correctStreak = 0;
                   if(wrongStreak >= 3){
                     updateCoins(-2);
                     wrongStreak = 0;
@@ -267,15 +279,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
