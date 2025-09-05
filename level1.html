@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Guessing Game</title>
+
+  <!-- تهيئة AdSense -->
+  <script async 
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
+    crossorigin="anonymous"></script>
+
   <style>
     :root{
       --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
@@ -22,6 +28,7 @@
         linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
       background-size:200% 200%; animation:gradientMove 18s ease-in-out infinite;
       position:relative;
+      padding-bottom:80px; /* عشان يسيب مساحة للبنر السفلي */
     }
     @keyframes gradientMove{
       0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%}
@@ -72,6 +79,26 @@
       color:var(--secondary); font-size:1.1rem; text-align:center; min-width:240px;
       box-shadow:0 10px 25px rgba(0,0,0,.35);
     }
+
+    /* إعلان بيني */
+    .interstitial {
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:9999;
+      background:rgba(0,0,0,.7);
+    }
+    .interstitial .content {
+      background:#fff; padding:20px; border-radius:12px; text-align:center; max-width:90%;
+    }
+    .close-btn {
+      margin-top:10px; padding:6px 12px; background:#ff5252; color:#fff; border:none; border-radius:6px;
+      cursor:pointer;
+    }
+
+    /* إعلان بانر سفلي */
+    .ad-banner {
+      position:fixed; bottom:0; left:0; width:100%; z-index:10;
+      display:flex; justify-content:center; background:rgba(0,0,0,.2); padding:5px 0;
+    }
+
     @media (max-width:420px){
       .keyboard{grid-template-columns:repeat(4, 58px); grid-template-rows:repeat(3, 58px); gap:12px}
       #word-display{font-size:2.2rem; letter-spacing:10px}
@@ -82,15 +109,14 @@
 
 <!-- زر الرجوع -->
 <button class="back-btn" onclick="window.location.href='main.html'">←</button>
-
 <style>
   .back-btn {
     position: fixed;
     top: 10px;
-    left: 50%;              /* يبدأ من منتصف الصفحة */
+    left: 50%;
     transform: translateX(-50%);
     padding: 10px 15px;
-    background-color: var(--primary-2); /* الأزرق من ألوان الخلفية */
+    background-color: var(--primary-2);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -98,11 +124,11 @@
     color: #fff;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 9999; /* عشان يكون فوق أي عناصر */
+    z-index: 9999;
   }
   .back-btn:hover {
-    background-color: #5ecbff; /* أزرق أفتح */
-    transform: translateX(-50%) scale(1.1); /* الحفاظ على المنتصف + التكبير */
+    background-color: #5ecbff;
+    transform: translateX(-50%) scale(1.1);
   }
 </style>
 
@@ -124,6 +150,27 @@
 
   <div class="modal" id="modal">
     <div class="box" id="modal-text"></div>
+  </div>
+
+  <!-- إعلان بيني -->
+  <div class="interstitial" id="interstitial">
+    <div class="content">
+      <p>إعلان بيني هنا</p>
+      <button class="close-btn" onclick="closeAd()">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- بانر سفلي -->
+  <div class="ad-banner">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-5814253816484006"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   </div>
 
   <script>
@@ -158,7 +205,6 @@
       {word:"MARS",hint:"Red planet"},
       {word:"EAGLE",hint:"Large bird of prey"},
       {word:"LION",hint:"King of beasts"}
-      // ... باقي الكلمات اللي عندك
     ];
 
     const hintEl = document.getElementById("hint-box");
@@ -167,12 +213,13 @@
     const coinsEl = document.getElementById("coins");
     const modal = document.getElementById("modal");
     const modalText = document.getElementById("modal-text");
+    const interstitial = document.getElementById("interstitial");
 
     let targetWord = "";
     let currentGuess = [];
     let coins = 0;
     let wrongStreak = 0;
-    let correctStreak = 0; // ✅ تتبع عدد الصح على التوالي
+    let correctStreak = 0;
     let letterSet = [];
 
     function showModal(msg){
@@ -237,18 +284,22 @@
                 if(guess === targetWord){
                   showModal("يا تخمين صح – True Guess");
                   updateCoins(10);
-                  correctStreak++; // ✅ زود عدد الصح المتتالية
+                  correctStreak++;
                   wrongStreak = 0;
-                  if(correctStreak === 10){ // ✅ مكافأة 1000
+
+                  // ✅ إظهار إعلان بيني بعد الليفل
+                  showInterstitial();
+
+                  if(correctStreak === 10){
                     updateCoins(1000);
                     showModal("🎉 Bonus +1000 Coins!");
-                    correctStreak = 0; // تصفير بعد البونص
+                    correctStreak = 0;
                   }
                   pickRandomWord();
                 }else{
                   showModal("تخمين خطأ – Wrong Guess");
                   wrongStreak++;
-                  correctStreak = 0; // ❌ لو غلط، تصفير الصح المتتالية
+                  correctStreak = 0;
                   if(wrongStreak >= 3){
                     updateCoins(-2);
                     wrongStreak = 0;
@@ -264,33 +315,14 @@
       }
     }
 
+    function showInterstitial(){
+      interstitial.style.display = "flex";
+    }
+    function closeAd(){
+      interstitial.style.display = "none";
+    }
+
     pickRandomWord();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
