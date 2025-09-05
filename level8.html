@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
+     crossorigin="anonymous"></script>
   <title>Guessing Game</title>
   <style>
     :root{
@@ -86,10 +88,10 @@
   .back-btn {
     position: fixed;
     top: 10px;
-    left: 50%;              /* يبدأ من منتصف الصفحة */
+    left: 50%;
     transform: translateX(-50%);
     padding: 10px 15px;
-    background-color: var(--primary-2); /* الأزرق من ألوان الخلفية */
+    background-color: var(--primary-2);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -97,11 +99,11 @@
     color: #fff;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 9999; /* عشان يكون فوق أي عناصر */
+    z-index: 9999;
   }
   .back-btn:hover {
-    background-color: #5ecbff; /* أزرق أفتح */
-    transform: translateX(-50%) scale(1.1); /* الحفاظ على المنتصف + التكبير */
+    background-color: #5ecbff;
+    transform: translateX(-50%) scale(1.1);
   }
 </style>
 
@@ -157,7 +159,6 @@
       {word:"MARS",hint:"Red planet"},
       {word:"EAGLE",hint:"Large bird of prey"},
       {word:"LION",hint:"King of beasts"}
-      // ... باقي الكلمات اللي عندك
     ];
 
     const hintEl = document.getElementById("hint-box");
@@ -171,7 +172,7 @@
     let currentGuess = [];
     let coins = 0;
     let wrongStreak = 0;
-    let correctStreak = 0; // ✅ تتبع عدد الصح على التوالي
+    let correctStreak = 0;
     let letterSet = [];
 
     function showModal(msg){
@@ -236,18 +237,18 @@
                 if(guess === targetWord){
                   showModal("يا تخمين صح – True Guess");
                   updateCoins(10);
-                  correctStreak++; // ✅ زود عدد الصح المتتالية
+                  correctStreak++;
                   wrongStreak = 0;
-                  if(correctStreak === 10){ // ✅ مكافأة 1000
+                  if(correctStreak === 10){
                     updateCoins(1000);
                     showModal("🎉 Bonus +1000 Coins!");
-                    correctStreak = 0; // تصفير بعد البونص
+                    correctStreak = 0;
                   }
                   pickRandomWord();
                 }else{
                   showModal("تخمين خطأ – Wrong Guess");
                   wrongStreak++;
-                  correctStreak = 0; // ❌ لو غلط، تصفير الصح المتتالية
+                  correctStreak = 0;
                   if(wrongStreak >= 3){
                     updateCoins(-2);
                     wrongStreak = 0;
@@ -265,17 +266,20 @@
 
     pickRandomWord();
   </script>
+
+  <!-- إعلان AdSense pp11 أسفل الصفحة -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5814253816484006"
+       crossorigin="anonymous"></script>
+  <!-- pp11 -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-5814253816484006"
+       data-ad-slot="2682448472"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
