@@ -77,7 +77,6 @@
   </div>
 
   <script>
-    const startScreen = document.getElementById('startScreen');
     const startBtn = document.getElementById('startBtn');
 
     // إعلان بيني (Interstitial)
@@ -98,8 +97,8 @@
       // عرض الإعلان البيني
       googletag.cmd.push(function() { googletag.display(interstitialSlot); });
 
-      // بعد شوية يروح للعبة
-      setTimeout(()=>{ window.location.href = 'main.html'; }, 4000);
+      // بعد 2 ثانية يروح للعبة
+      setTimeout(()=>{ window.location.href = 'main.html'; }, 2000);
     });
 
     // Background particles
