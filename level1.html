@@ -156,7 +156,7 @@
     ctx.clearRect(0,0,w,h);
     ctx.fillStyle='rgba(124,255,243,0.2)';
     circles.forEach(c=>{ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
-      c.y -= c.vy; if(c.y + c.r < 0){c.y = h+c.r; c.x=Math.random()*w;}}); 
+      c.y -= c.vy; if(c.y + c.r < 0){c.y = h+c.r; c.x=Math.random()*w;}});  
     requestAnimationFrame(animate);
   } animate();
 
